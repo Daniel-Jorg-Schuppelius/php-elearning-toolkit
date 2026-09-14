@@ -1,0 +1,11 @@
+parameters:
+    level: 8
+    # Gegen die gesamte unterstützte PHP-Spanne (composer: >=8.2 <8.6) analysieren.
+    # 8.2 als Untergrenze: web-token/jwt-library (LTI 1.3) verlangt es.
+    phpVersion:
+        min: 80200
+        max: 80599
+    paths:
+        - src
+        - tests
+    tmpDir: var/phpstan
