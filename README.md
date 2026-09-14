@@ -17,7 +17,7 @@ IRI-Prüfung) und `web-token/jwt-library` 4.x für LTI.
 | SCORM | `Scorm\Manifest`, `Scorm\CompletionRule`, `Scorm\Score`, `Scorm\LaunchPath` | Manifest namensraum-agnostisch lesen, Abschlussregel für 1.2 und 2004 |
 | xAPI | `XApi\StatementValidator`, `XApi\Statement`, `XApi\ProgressRule` | Statements nach xAPI 1.0.3 prüfen und auf Fortschritt abbilden |
 | cmi5 | `Cmi5\CourseStructure`, `Cmi5\LaunchUrl`, `Cmi5\LaunchData`, `Cmi5\Session`, `Cmi5\StatementRules`, `Cmi5\LmsStatements` | Kursstruktur, Start, Sitzungsregeln für AU-Statements, Statements des LMS |
-| LTI 1.3 | `Lti\LoginInitiation`, `Lti\AuthenticationRequest`, `Lti\IdTokenBuilder`, `Lti\LaunchValidator`, `Lti\DeepLinkingResponse`, `Lti\Keys` | OIDC-Login, Launch als Plattform und als Tool, Deep Linking 2.0, Schlüssel und JWKS |
+| LTI 1.3 | `Lti\LoginInitiation`, `Lti\AuthenticationRequest`, `Lti\IdTokenBuilder`, `Lti\LaunchValidator`, `Lti\DeepLinkingResponse`, `Lti\Keys` | Login-Anstoß und Authentifizierungsanfrage beider Seiten (`LoginInitiation::toolLoginUrl()` für die Plattform), Launch als Plattform und als Tool, Deep Linking 2.0, Schlüssel und JWKS |
 
 ## Grundsätze
 

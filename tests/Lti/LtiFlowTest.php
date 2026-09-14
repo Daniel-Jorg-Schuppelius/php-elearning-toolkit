@@ -103,6 +103,25 @@ final class LtiFlowTest extends TestCase {
             ->authenticationRequestUrl($this->platformAsSeenByTool(), self::REDIRECT, 's', 'n')));
     }
 
+    public function test_the_platform_builds_the_login_initiation_the_tool_accepts(): void {
+        $url = LoginInitiation::toolLoginUrl('https://tool.example.org/lti/login?quelle=1', $this->toolAsSeenByPlatform(), 'person-17', self::TARGET, 'link-3', self::DEPLOYMENT);
+
+        $this->assertStringStartsWith('https://tool.example.org/lti/login?quelle=1&', $url);
+        parse_str((string) parse_url($url, PHP_URL_QUERY), $query);
+        $login = LoginInitiation::fromParameters($query);
+
+        $this->assertSame(self::PLATFORM, $login->issuer);
+        $this->assertSame('person-17', $login->loginHint);
+        $this->assertSame(self::TARGET, $login->targetLinkUri);
+        $this->assertSame('link-3', $login->messageHint);
+        $this->assertSame(self::DEPLOYMENT, $login->deploymentId);
+        $this->assertSame(self::CLIENT, $login->clientId);
+
+        $this->assertSame(LtiException::UNKNOWN_DEPLOYMENT, $this->reasonOf(fn () => LoginInitiation::toolLoginUrl('https://tool.example.org/lti/login', $this->toolAsSeenByPlatform(), 'person-17', self::TARGET, null, 'fremd')));
+        $this->assertSame(LtiException::INVALID_LOGIN_REQUEST, $this->reasonOf(fn () => LoginInitiation::toolLoginUrl('https://tool.example.org/lti/login', $this->toolAsSeenByPlatform(), '', self::TARGET)));
+        $this->assertSame(LtiException::INVALID_LOGIN_REQUEST, $this->reasonOf(fn () => LoginInitiation::toolLoginUrl('tool/login', $this->toolAsSeenByPlatform(), 'person-17', self::TARGET)));
+    }
+
     public function test_the_platform_only_answers_registered_redirect_uris(): void {
         $this->assertSame(LtiException::INVALID_AUTHENTICATION_REQUEST, $this->reasonOf(fn () => $this->authenticationRequest(['redirect_uri' => 'https://angreifer.example.org/fang'])));
         $this->assertSame(LtiException::INVALID_AUTHENTICATION_REQUEST, $this->reasonOf(fn () => $this->authenticationRequest(['redirect_uri' => self::REDIRECT . '/unterpfad'])), 'Kein Präfixvergleich.');

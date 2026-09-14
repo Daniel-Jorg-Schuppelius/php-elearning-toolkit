@@ -61,6 +61,45 @@ final class LoginInitiation {
     }
 
     /**
+     * Plattformseite: Adresse des Login-Starts beim Tool (Security Framework 5.1.1.1,
+     * LTI Core 4.1).
+     *
+     * `login_hint` und `lti_message_hint` sind für das Tool undurchsichtig; die
+     * Plattform erkennt sie in der Authentifizierungsanfrage wieder.
+     *
+     * @throws LtiException
+     */
+    public static function toolLoginUrl(string $toolLoginUrl, Registration $tool, string $loginHint, string $targetLinkUri, ?string $messageHint = null, ?string $deploymentId = null): string {
+        if (!WebLinkHelper::isAbsoluteIri($toolLoginUrl)) {
+            throw new LtiException(LtiException::INVALID_LOGIN_REQUEST, 'login url');
+        }
+        if ($loginHint === '') {
+            throw new LtiException(LtiException::INVALID_LOGIN_REQUEST, 'login_hint');
+        }
+        if (!WebLinkHelper::isAbsoluteIri($targetLinkUri)) {
+            throw new LtiException(LtiException::INVALID_LOGIN_REQUEST, 'target_link_uri');
+        }
+        if ($deploymentId !== null && !$tool->hasDeployment($deploymentId)) {
+            throw new LtiException(LtiException::UNKNOWN_DEPLOYMENT, $deploymentId);
+        }
+
+        $parameters = [
+            'iss' => $tool->issuer,
+            'login_hint' => $loginHint,
+            'target_link_uri' => $targetLinkUri,
+            'client_id' => $tool->clientId,
+        ];
+        if ($deploymentId !== null) {
+            $parameters['lti_deployment_id'] = $deploymentId;
+        }
+        if ($messageHint !== null && $messageHint !== '') {
+            $parameters['lti_message_hint'] = $messageHint;
+        }
+
+        return $toolLoginUrl . (str_contains($toolLoginUrl, '?') ? '&' : '?') . http_build_query($parameters, '', '&', PHP_QUERY_RFC3986);
+    }
+
+    /**
      * Adresse der Authentifizierungsanfrage an die Plattform (Security Framework 5.1.1.2).
      *
      * `state` und `nonce` erzeugt die Anwendung und bindet sie an die Browser-Sitzung.
