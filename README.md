@@ -5,7 +5,7 @@ xAPI 1.0.3, cmi5 und LTI 1.3. Entstanden aus der Lernplattform von workDiary
 (Feature 149); die SCORM-Teile waren dort bewusst ohne Laravel gebaut, damit
 dieser Umzug ein Verschieben ist und kein Neuschreiben.
 
-**Stand:** alle vier Bereiche umgesetzt und getestet, noch nicht veröffentlicht.
+**Stand:** alle vier Bereiche umgesetzt und getestet; veröffentlicht als **v0.1.1**.
 Benötigt `dschuppelius/php-common-toolkit` ab 1.34 (Zip-Eintragsfilter, UUID- und
 IRI-Prüfung) und `web-token/jwt-library` 4.x für LTI.
 
