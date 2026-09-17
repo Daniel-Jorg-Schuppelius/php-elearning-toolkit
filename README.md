@@ -68,9 +68,13 @@ $launch = (new LaunchValidator($nonceStore))->validate($idToken, $platformRegist
 ## Entwicklung
 
 ```bash
-# gegen ein unveröffentlichtes common-toolkit im Nachbarordner
+# gegen ein lokales common-toolkit im Nachbarordner (etwa vor einem Release)
 COMPOSER=composer.dev.json composer update
 composer qa   # Pint, PHPStan (Level 8), PHPUnit
 ```
 
 `composer.dev.json` und ihre Lock-Datei sind ignoriert und dürfen nicht committet werden.
+
+## Versionen
+
+Veröffentlichungen hängen als Git-Tags (`git tag --sort=-v:refname`, zuletzt v0.1.1). Eine eigene Änderungsdatei gibt es nicht — maßgeblich sind Tags und Commit-Historie.
