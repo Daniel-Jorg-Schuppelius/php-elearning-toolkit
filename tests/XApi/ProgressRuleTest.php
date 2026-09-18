@@ -44,4 +44,13 @@ final class ProgressRuleTest extends TestCase {
         $this->assertSame(Outcome::None, ProgressRule::evaluate($this->statement(Verbs::EXPERIENCED)));
         $this->assertSame(Outcome::None, ProgressRule::evaluate($this->statement(Verbs::LAUNCHED)));
     }
+
+    public function test_raw_statements_follow_the_same_rule_without_validation(): void {
+        // Ohne actor — für fromArray() ungültig, für den Fortschritt unerheblich.
+        $this->assertSame(Outcome::Completed, ProgressRule::evaluateRaw(['verb' => ['id' => Verbs::PASSED]]));
+        $this->assertSame(Outcome::Failed, ProgressRule::evaluateRaw(['verb' => ['id' => Verbs::COMPLETED], 'result' => ['success' => false]]));
+        $this->assertSame(Outcome::Completed, ProgressRule::evaluateRaw(['verb' => ['id' => Verbs::COMPLETED], 'result' => ['success' => 'nein']]));
+        $this->assertSame(Outcome::None, ProgressRule::evaluateRaw(['verb' => 'kaputt']));
+        $this->assertSame(Outcome::None, ProgressRule::evaluateRaw([]));
+    }
 }

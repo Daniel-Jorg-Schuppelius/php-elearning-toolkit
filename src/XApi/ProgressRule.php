@@ -26,14 +26,36 @@ final class ProgressRule {
     private const FAILING_VERBS = [Verbs::FAILED];
 
     public static function evaluate(Statement $statement): Outcome {
-        if (in_array($statement->verbId, self::FAILING_VERBS, true)) {
+        return self::decide($statement->verbId, $statement->success);
+    }
+
+    /**
+     * Wie {@see evaluate()}, aber auf dem rohen Statement-Array ohne
+     * Validierung: ein Endpunkt, der auch unsaubere Statements von
+     * Autorenwerkzeugen annimmt, wertet sie nach derselben Regel aus.
+     * Maßgeblich sind nur `verb.id` und `result.success`.
+     *
+     * @param array<mixed> $statement
+     */
+    public static function evaluateRaw(array $statement): Outcome {
+        $verb = is_array($statement['verb'] ?? null) ? $statement['verb'] : [];
+        $result = is_array($statement['result'] ?? null) ? $statement['result'] : [];
+
+        return self::decide(
+            is_string($verb['id'] ?? null) ? $verb['id'] : null,
+            is_bool($result['success'] ?? null) ? $result['success'] : null,
+        );
+    }
+
+    private static function decide(?string $verbId, ?bool $success): Outcome {
+        if (in_array($verbId, self::FAILING_VERBS, true)) {
             return Outcome::Failed;
         }
 
-        if (!in_array($statement->verbId, self::COMPLETING_VERBS, true)) {
+        if (!in_array($verbId, self::COMPLETING_VERBS, true)) {
             return Outcome::None;
         }
 
-        return $statement->success === false ? Outcome::Failed : Outcome::Completed;
+        return $success === false ? Outcome::Failed : Outcome::Completed;
     }
 }
